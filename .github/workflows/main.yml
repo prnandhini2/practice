@@ -1,0 +1,14 @@
+name: Example Workflow
+
+on: [push]
+
+jobs:
+  example-job:
+    runs-on: self-hosted
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+    
+    - name: Run a command
+      run: echo "Hello from self-hosted runner!"
