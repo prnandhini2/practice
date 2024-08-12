@@ -1,15 +1,15 @@
 name: Hello Actions Workflow
 
-on: [push, pull_request]  # This triggers the workflow on push or pull request
+on: [push, pull_request]  # Triggers the workflow on push and pull requests
 
 jobs:
   say-hello:
-    runs-on: self-hosted  # This ensures the job runs on your self-hosted runner
-    
+    runs-on: self-hosted  # Runs on a self-hosted runner
+
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v3  # Check out the code from the repository
-      
+    - name: Checkout code
+      uses: actions/checkout@v3  # Checks out the repository code
+
     - name: Say Hello
-      run: echo "Hello Actions!"
+      run: echo "Hello Actions!"  # Runs the command to print "Hello Actions!"
 
