@@ -15,3 +15,4 @@ COPY . .
 
 # Default command
 CMD ["bash"]
+
