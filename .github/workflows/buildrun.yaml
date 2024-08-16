@@ -1,0 +1,33 @@
+name: Build and Run C Program
+
+on: [push]
+
+jobs:
+  compile:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Compile C Program
+        run: |
+          docker run --rm -v $(pwd):/usr/src/myapp -w /usr/src/myapp gcc:latest gcc -o hello hello.c
+
+      - name: Save artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: hello-executable
+          path: hello
+
+  run:
+    runs-on: self-hosted
+    needs: compile
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: hello-executable
+
+      - name: Run C Program
+        run: |
+          docker run --rm -v $(pwd):/usr/src/myapp -w /usr/src/myapp debian:latest ./hello
