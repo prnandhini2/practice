@@ -8,24 +8,22 @@ jobs:
     
     strategy:
       matrix:
-        gcc-version: [9, 10, 11]
+        gcc-version: [9, 10, 11]  # Testing with GCC versions 9, 10, and 11
 
     env:
-      MY_ENV_VAR: my_value
-      MY_SECRET: ${{ secrets.MY_SECRET }}
+      MY_SECRET: ${{ secrets.MY_SECRET }}  # Referencing a secret
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up GCC
-        uses: docker://gcc:${{ matrix.gcc-version }}
-        with:
-          entrypoint: "/bin/bash"
-          args: "-c 'gcc --version'"
+      - name: Compile C program
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/usr/src/myapp -w /usr/src/myapp gcc:${{ matrix.gcc-version }} gcc -o hello hello.c
 
-      - name: Compile and run C program
-        uses: docker://gcc:${{ matrix.gcc-version }}
-        with:
-          entrypoint: "/bin/bash"
-          args: "-c 'gcc -o hello hello.c && ./hello'"
+      - name: Run C program
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/usr/src/myapp -w /usr/src/myapp gcc:${{ matrix.gcc-version }} ./hello
+
+      - name: Run unit tests
+        run: ./run-tests.sh  # Example step to run tests if applicable
