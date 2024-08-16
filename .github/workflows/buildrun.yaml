@@ -5,12 +5,27 @@ on: [push]
 jobs:
   build:
     runs-on: self-hosted
+    
+    strategy:
+      matrix:
+        gcc-version: [9, 10, 11]
+
+    env:
+      MY_ENV_VAR: my_value
+      MY_SECRET: ${{ secrets.MY_SECRET }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up GCC
+        uses: docker://gcc:${{ matrix.gcc-version }}
+        with:
+          entrypoint: "/bin/bash"
+          args: "-c 'gcc --version'"
+
       - name: Compile and run C program
-        uses: docker://gcc:latest
+        uses: docker://gcc:${{ matrix.gcc-version }}
         with:
           entrypoint: "/bin/bash"
           args: "-c 'gcc -o hello hello.c && ./hello'"
