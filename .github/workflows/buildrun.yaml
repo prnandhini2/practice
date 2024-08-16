@@ -8,10 +8,7 @@ jobs:
     
     strategy:
       matrix:
-        gcc-version: [9, 10, 11]  # Testing with GCC versions 9, 10, and 11
-
-    env:
-      MY_SECRET: ${{ secrets.MY_SECRET }}  # Referencing a secret
+        gcc-version: [9, 10, 11]  # Define GCC versions to test
 
     steps:
       - name: Checkout code
@@ -20,10 +17,16 @@ jobs:
       - name: Compile C program
         run: |
           docker run --rm -v ${{ github.workspace }}:/usr/src/myapp -w /usr/src/myapp gcc:${{ matrix.gcc-version }} gcc -o hello hello.c
+        # Compiling the C program using the specified GCC version
+
+      - name: Upload compiled binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: compiled-binaries
+          path: ./hello
+        # Upload the compiled binary for later use or download
 
       - name: Run C program
         run: |
           docker run --rm -v ${{ github.workspace }}:/usr/src/myapp -w /usr/src/myapp gcc:${{ matrix.gcc-version }} ./hello
-
-      - name: Run unit tests
-        run: ./run-tests.sh  # Example step to run tests if applicable
+        # Running the compiled C program
